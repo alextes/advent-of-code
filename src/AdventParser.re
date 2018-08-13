@@ -69,12 +69,7 @@ let rec parse = (parsers, input) =>
   | _ => failwith("Could not parse input")
   };
 
-/* run input through parser list */
-/* if any successful, return successful result */
-/* read input */
-/* assume newline delimited data */
-/* run a single line through the parser */
-/* run data through solver */
+
 let _ =
   Node.Fs.readFileAsUtf8Sync("src/input-1")
   |> Js.String.split("\n")
