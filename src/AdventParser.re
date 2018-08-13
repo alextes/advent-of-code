@@ -33,10 +33,10 @@ let getNext = input =>
   String.length(input) == 0 ? None : Some(String.sub(input, 0, 1));
 
 let rec pNumber = (~nums="", input) => {
-  let isParsedNums = String.length(nums) != 0;
+  let isParsingNums = String.length(nums) != 0;
   let next = getNext(input) |. Belt.Option.getWithDefault("");
   let isNextNum = isCharNum(next);
-  switch (isParsedNums, isNextNum) {
+  switch (isParsingNums, isNextNum) {
   | (false, false) => None
   | (true, false) => Some({rest: input, value: nums})
   | (_, true) => pNumber(~nums=nums ++ next, stringAfter(input, 1))
