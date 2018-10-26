@@ -69,7 +69,6 @@ let rec parse = (parsers, input) =>
   | _ => failwith("Could not parse input")
   };
 
-
 let _ =
   Node.Fs.readFileAsUtf8Sync("src/input-1")
   |> Js.String.split("\n")
