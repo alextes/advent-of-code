@@ -34,7 +34,7 @@ let getNext = input =>
 
 let rec pNumber = (~nums="", input) => {
   let isParsingNums = String.length(nums) != 0;
-  let next = getNext(input) |. Belt.Option.getWithDefault("");
+  let next = getNext(input)->Belt.Option.getWithDefault("");
   let isNextNum = isCharNum(next);
   switch (isParsingNums, isNextNum) {
   | (false, false) => None
@@ -63,8 +63,8 @@ let rec parse = (parsers, input) =>
   | Some(a) =>
     /* if any is successful, store the result */
     /* continue with the rest  */
-    String.length(a.rest) === 0 ?
-      Js.log("Successfully parsed") : parse(parsers, a.rest)
+    String.length(a.rest) === 0
+      ? Js.log("Successfully parsed") : parse(parsers, a.rest)
   /* if none is successful, we can't parse the result, explode */
   | _ => failwith("Could not parse input")
   };
