@@ -4,3 +4,7 @@
 npm-debug.log
 /lib/bs/
 /node_modules/
+.psc-ide-port
+.purs-repl
+.spago
+output
