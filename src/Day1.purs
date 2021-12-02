@@ -4,7 +4,6 @@ import Prelude
 import Data.Array as Array
 import Data.Foldable as Foldable
 import Data.Int as Int
-import Data.Maybe (Maybe(..))
 import Data.String (Pattern(..))
 import Data.String as Str
 import Effect (Effect)
@@ -33,15 +32,16 @@ type Depth
   = Int
 
 window :: ∀ a. Int -> Array a -> Array (Array a)
-window n nums = Array.mapWithIndex mapToTuple nums # Array.catMaybes
+window n nums =
+  nums
+    # Array.mapWithIndex makeWindow
+    >>> Array.filter getIsValidWindow
   where
-  mapToTuple :: Int -> a -> Maybe (Array a)
-  mapToTuple i _ =
-    Array.drop i nums
-      # Array.take n
-      >>> \inScope -> case (Array.length inScope) == n of
-          true -> Just inScope
-          false -> Nothing
+  makeWindow :: Int -> a -> Array a
+  makeWindow i _ = Array.drop i nums # Array.take n
+
+  getIsValidWindow :: (Array a) -> Boolean
+  getIsValidWindow = Array.length >>> eq n
 
 depthChangeFromPair :: Array Depth -> DepthChange
 depthChangeFromPair [ first, second ] = case compare first second of

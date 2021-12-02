@@ -6,7 +6,6 @@
   , "effect"
   , "foldable-traversable"
   , "integers"
-  , "maybe"
   , "node-buffer"
   , "node-fs"
   , "partial"
