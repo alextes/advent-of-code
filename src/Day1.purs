@@ -6,6 +6,9 @@ import Data.Foldable as Foldable
 import Data.Int as Int
 import Data.String (Pattern(..))
 import Data.String as Str
+import Data.Tuple (Tuple)
+import Data.Tuple as Tuple
+import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync (readTextFile)
@@ -43,21 +46,24 @@ window n nums =
   getIsValidWindow :: (Array a) -> Boolean
   getIsValidWindow = Array.length >>> eq n
 
-depthChangeFromPair :: Array Depth -> DepthChange
-depthChangeFromPair [ first, second ] = case compare first second of
+depthChangeFromPair :: Depth -> Depth -> DepthChange
+depthChangeFromPair first second = case compare first second of
   GT -> Decrease
   LT -> Increase
   EQ -> NoChange
 
-depthChangeFromPair _ = unsafeCrashWith "depthChangeFromPair can only handle arrays of length 2"
-
 countMatching :: forall a. Eq a => (a -> Boolean) -> Array a -> Int
 countMatching eqFn = Array.filter eqFn >>> Array.length
+
+tupleFromArray :: forall a. Array a -> Tuple a a
+tupleFromArray arr = case arr of
+  [ a, b ] -> a /\ b
+  _ -> unsafeCrashWith "unsafeTupleFromArray can only handle arrays of length two"
 
 getSolution1 :: PuzzleInput -> Int
 getSolution1 =
   window 2
-    >>> map depthChangeFromPair
+    >>> map (tupleFromArray >>> Tuple.uncurry depthChangeFromPair)
     >>> countMatching (eq Increase)
 
 getSolution2 :: PuzzleInput -> Int
@@ -65,5 +71,5 @@ getSolution2 =
   window 3
     >>> map Foldable.sum
     >>> window 2
-    >>> map depthChangeFromPair
+    >>> map (tupleFromArray >>> Tuple.uncurry depthChangeFromPair)
     >>> countMatching (eq Increase)
