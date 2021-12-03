@@ -6,6 +6,8 @@
   , "effect"
   , "foldable-traversable"
   , "integers"
+  , "maybe"
+  , "newtype"
   , "node-buffer"
   , "node-fs"
   , "partial"
@@ -13,6 +15,7 @@
   , "psci-support"
   , "strings"
   , "tuples"
+  , "unsafe-coerce"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
