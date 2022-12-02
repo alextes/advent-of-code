@@ -1,3 +1,5 @@
+//! Responsible for helping us read puzzle inputs.
+
 use std::fs;
 
 fn get_input(day: &i32) -> String {
@@ -5,6 +7,12 @@ fn get_input(day: &i32) -> String {
     fs::read_to_string(path).unwrap()
 }
 
+/// Turns the requested input file into a set of lines.
+///
+/// The files with have the usual terminating newline, which for our purposes is not input, and
+/// therefore dropped.
 pub fn get_input_lines(day: &i32) -> Vec<String> {
-    get_input(day).split('\n').map(String::from).collect()
+    let lines: Vec<_> = get_input(day).split('\n').map(String::from).collect();
+    let (_last, rest) = lines.split_last().unwrap();
+    rest.to_vec()
 }
