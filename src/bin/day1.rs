@@ -3,7 +3,7 @@ use std::ops::Add;
 use advent_of_code::input;
 
 /// Returns the summed calories per elf. Sorted. Biggest first.
-fn get_calorie_sums(lines: &Vec<String>) -> Vec<i32> {
+fn get_calorie_sums(lines: &Vec<String>) -> Vec<u32> {
     let mut calorie_groups = vec![];
     let mut sum = 0;
     for line in lines {
@@ -13,7 +13,7 @@ fn get_calorie_sums(lines: &Vec<String>) -> Vec<i32> {
                 sum = 0;
             }
             num_str => {
-                let num: i32 = num_str
+                let num: u32 = num_str
                     .parse()
                     .expect("expect newlines or numerical strings");
                 sum = sum + num;
@@ -26,7 +26,7 @@ fn get_calorie_sums(lines: &Vec<String>) -> Vec<i32> {
     calorie_groups
 }
 
-fn get_biggest_sum(lines: &Vec<String>) -> i32 {
+fn get_biggest_sum(lines: &Vec<String>) -> u32 {
     let calorie_sums = get_calorie_sums(lines);
     calorie_sums
         .first()
@@ -34,9 +34,9 @@ fn get_biggest_sum(lines: &Vec<String>) -> i32 {
         .to_owned()
 }
 
-fn get_biggest_three_sum(lines: &Vec<String>) -> i32 {
+fn get_biggest_three_sum(lines: &Vec<String>) -> u32 {
     let calorie_sums = get_calorie_sums(lines);
-    calorie_sums[0..3].iter().fold(0, i32::add)
+    calorie_sums[0..3].iter().fold(0, u32::add)
 }
 
 fn main() {
