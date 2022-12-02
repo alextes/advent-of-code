@@ -44,7 +44,7 @@ impl FromStr for Outcome {
 }
 
 impl Shape {
-    fn get_shape_score(&self) -> u32 {
+    fn shape_score(&self) -> u32 {
         match self {
             Self::Rock => 1,
             Self::Paper => 2,
@@ -52,7 +52,7 @@ impl Shape {
         }
     }
 
-    fn get_outcome(&self, opponent_shape: Shape) -> Outcome {
+    fn play_against(&self, opponent_shape: Shape) -> Outcome {
         use Outcome::*;
         use Shape::*;
 
@@ -69,7 +69,7 @@ impl Shape {
         }
     }
 
-    fn get_shape_for_desired_outcome(&self, desired_outcome: &Outcome) -> Self {
+    fn desired_shape(&self, desired_outcome: &Outcome) -> Self {
         match (self, desired_outcome) {
             (Rock, Draw) => Rock,
             (Rock, Lose) => Scissors,
@@ -118,8 +118,8 @@ fn get_score_method_one() -> u32 {
         let opponent_shape: Shape = splits[0].parse().unwrap();
         let our_shape: Shape = (splits[1]).parse().unwrap();
 
-        let shape_score = our_shape.get_shape_score();
-        let outcome_score = our_shape.get_outcome(opponent_shape).get_outcome_score();
+        let shape_score = our_shape.shape_score();
+        let outcome_score = our_shape.play_against(opponent_shape).get_outcome_score();
 
         score = score + shape_score + outcome_score;
     }
@@ -137,10 +137,10 @@ fn get_score_method_two() -> u32 {
         let splits = line.split(' ').collect::<Vec<&str>>();
         let opponent_shape: Shape = splits[0].parse().unwrap();
         let desired_outcome: Outcome = splits[1].parse().unwrap();
-        let our_shape = opponent_shape.get_shape_for_desired_outcome(&desired_outcome);
+        let our_shape = opponent_shape.desired_shape(&desired_outcome);
 
-        let shape_score = our_shape.get_shape_score();
-        let outcome_score = our_shape.get_outcome(opponent_shape).get_outcome_score();
+        let shape_score = our_shape.shape_score();
+        let outcome_score = our_shape.play_against(opponent_shape).get_outcome_score();
 
         score = score + shape_score + outcome_score;
     }
