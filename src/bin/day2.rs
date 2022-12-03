@@ -150,10 +150,10 @@ fn get_score_method_two() -> u32 {
 
 fn main() {
     let score_one = get_score_method_one();
-    println!("answer1: {}", score_one);
+    println!("answer1: {score_one}");
 
     let score_two = get_score_method_two();
-    println!("answer2: {}", score_two);
+    println!("answer2: {score_two}");
 }
 
 #[cfg(test)]

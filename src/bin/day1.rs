@@ -43,10 +43,10 @@ fn main() {
     let lines = input::get_input_lines(&1);
 
     let biggest_sum = get_biggest_sum(&lines);
-    println!("answer1: {}", biggest_sum);
+    println!("answer1: {biggest_sum}");
 
     let biggest_three_sum = get_biggest_three_sum(&lines);
-    println!("answer2: {}", biggest_three_sum);
+    println!("answer2: {biggest_three_sum}");
 }
 
 #[cfg(test)]
