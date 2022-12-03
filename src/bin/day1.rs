@@ -1,5 +1,3 @@
-use std::ops::Add;
-
 use advent_of_code::input;
 
 /// Returns the summed calories per elf. Sorted. Biggest first.
@@ -36,7 +34,7 @@ fn get_biggest_sum(lines: &Vec<String>) -> u32 {
 
 fn get_biggest_three_sum(lines: &Vec<String>) -> u32 {
     let calorie_sums = get_calorie_sums(lines);
-    calorie_sums[0..3].iter().fold(0, u32::add)
+    calorie_sums[0..3].iter().sum()
 }
 
 fn main() {
