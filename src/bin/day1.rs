@@ -1,4 +1,4 @@
-use advent_of_code::input;
+use advent_of_code::input::{FirstOrSecond, Input};
 
 /// Returns the summed calories per elf. Sorted. Biggest first.
 fn get_calorie_sums(lines: &Vec<String>) -> Vec<u32> {
@@ -38,12 +38,12 @@ fn get_biggest_three_sum(lines: &Vec<String>) -> u32 {
 }
 
 fn main() {
-    let lines = input::get_input_lines(&1);
+    let input = Input::new(1, FirstOrSecond::First);
 
-    let biggest_sum = get_biggest_sum(&lines);
+    let biggest_sum = get_biggest_sum(input.lines());
     println!("answer1: {biggest_sum}");
 
-    let biggest_three_sum = get_biggest_three_sum(&lines);
+    let biggest_three_sum = get_biggest_three_sum(input.lines());
     println!("answer2: {biggest_three_sum}");
 }
 
@@ -53,15 +53,15 @@ mod tests {
 
     #[test]
     fn biggest_sum_test() {
-        let lines = input::get_input_lines(&1);
-        let biggest_sum = get_biggest_sum(&lines);
+        let input = Input::new(1, FirstOrSecond::First);
+        let biggest_sum = get_biggest_sum(input.lines());
         assert_eq!(biggest_sum, 71471)
     }
 
     #[test]
     fn biggest_three_sum_test() {
-        let lines = input::get_input_lines(&1);
-        let biggest_three_sum = get_biggest_three_sum(&lines);
+        let input = Input::new(1, FirstOrSecond::First);
+        let biggest_three_sum = get_biggest_three_sum(input.lines());
         assert_eq!(biggest_three_sum, 211189)
     }
 }

@@ -1,6 +1,6 @@
 use std::{fmt::Display, str::FromStr};
 
-use advent_of_code::input;
+use advent_of_code::input::{FirstOrSecond, Input};
 
 use Outcome::*;
 use Shape::*;
@@ -109,10 +109,9 @@ impl Display for ParseShapeError {
 }
 
 /// Uses the interpretation where both columns represent shapes played.
-fn get_score_method_one() -> u32 {
-    let lines = input::get_input_lines(&2);
-
+fn get_score_method_one(lines: &Vec<String>) -> u32 {
     let mut score = 0;
+
     for line in lines {
         let splits = line.split(' ').collect::<Vec<&str>>();
         let opponent_shape: Shape = splits[0].parse().unwrap();
@@ -129,10 +128,9 @@ fn get_score_method_one() -> u32 {
 
 /// Uses the interpretation where the first column is the shape played but the second is the
 /// outcome desired.
-fn get_score_method_two() -> u32 {
-    let lines = input::get_input_lines(&2);
-
+fn get_score_method_two(lines: &Vec<String>) -> u32 {
     let mut score = 0;
+
     for line in lines {
         let splits = line.split(' ').collect::<Vec<&str>>();
         let opponent_shape: Shape = splits[0].parse().unwrap();
@@ -149,10 +147,11 @@ fn get_score_method_two() -> u32 {
 }
 
 fn main() {
-    let score_one = get_score_method_one();
+    let input = Input::new(2, FirstOrSecond::First);
+    let score_one = get_score_method_one(input.lines());
     println!("answer1: {score_one}");
 
-    let score_two = get_score_method_two();
+    let score_two = get_score_method_two(input.lines());
     println!("answer2: {score_two}");
 }
 
@@ -162,14 +161,16 @@ mod tests {
 
     #[test]
     fn get_score_one_test() {
-        let score_one = get_score_method_one();
+        let input = Input::new(2, FirstOrSecond::First);
+        let score_one = get_score_method_one(input.lines());
 
         assert_eq!(11449, score_one);
     }
 
     #[test]
     fn get_score_two_test() {
-        let score = get_score_method_two();
+        let input = Input::new(2, FirstOrSecond::First);
+        let score = get_score_method_two(input.lines());
 
         assert_eq!(13187, score);
     }
