@@ -1,6 +1,6 @@
 use std::{fmt::Display, str::FromStr};
 
-use advent_of_code::input::{FirstOrSecond, Input};
+use advent_of_code::input::Input;
 
 use Outcome::*;
 use Shape::*;
@@ -147,7 +147,7 @@ fn get_score_method_two(lines: &Vec<String>) -> u32 {
 }
 
 fn main() {
-    let input = Input::new(2, FirstOrSecond::First);
+    let input = Input::new(2);
     let score_one = get_score_method_one(input.lines());
     println!("answer1: {score_one}");
 
@@ -161,7 +161,7 @@ mod tests {
 
     #[test]
     fn get_score_one_test() {
-        let input = Input::new(2, FirstOrSecond::First);
+        let input = Input::new(2);
         let score_one = get_score_method_one(input.lines());
 
         assert_eq!(11449, score_one);
@@ -169,7 +169,7 @@ mod tests {
 
     #[test]
     fn get_score_two_test() {
-        let input = Input::new(2, FirstOrSecond::First);
+        let input = Input::new(2);
         let score = get_score_method_two(input.lines());
 
         assert_eq!(13187, score);

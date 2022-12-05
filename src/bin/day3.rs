@@ -50,7 +50,7 @@
 
 use std::collections::HashSet;
 
-use advent_of_code::input::{FirstOrSecond, Input};
+use advent_of_code::input::Input;
 
 #[derive(Debug)]
 struct AlphabetOrdinal(u8);
@@ -126,7 +126,7 @@ fn get_sum_method_two(lines: &Vec<String>) -> u32 {
 }
 
 fn main() {
-    let input = Input::new(3, FirstOrSecond::First);
+    let input = Input::new(3);
 
     let sum_one = get_sum_method_one(input.lines());
     println!("answer1: {sum_one}");
@@ -141,7 +141,7 @@ mod tests {
 
     #[test]
     fn sum_method_one_test() {
-        let input = Input::new(3, FirstOrSecond::First);
+        let input = Input::new(3);
 
         let sum_one = get_sum_method_one(input.lines());
 
@@ -150,7 +150,7 @@ mod tests {
 
     #[test]
     fn sum_method_two_test() {
-        let input = Input::new(3, FirstOrSecond::First);
+        let input = Input::new(3);
 
         let sum_two = get_sum_method_two(input.lines());
 

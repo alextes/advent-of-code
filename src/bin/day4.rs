@@ -58,7 +58,7 @@
 //!
 //! In how many assignment pairs do the ranges overlap?
 
-use advent_of_code::input::{FirstOrSecond, Input};
+use advent_of_code::input::Input;
 
 type Range = (u32, u32);
 
@@ -117,7 +117,7 @@ fn count_overlapping_pairs(range_pairs: &Vec<(Range, Range)>) -> u32 {
 }
 
 fn main() {
-    let input = Input::new(4, FirstOrSecond::First);
+    let input = Input::new(4);
     let range_pairs = split_lines_into_range_pairs(input.lines());
     // Count the number of range_pairs which are subsets.
     let subset_count = count_subset_pairs(&range_pairs);
