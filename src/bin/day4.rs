@@ -60,31 +60,39 @@
 
 use advent_of_code::input::{FirstOrSecond, Input};
 
-fn range_is_subset_of_range(range1: (u32, u32), range2: (u32, u32)) -> bool {
+type Range = (u32, u32);
+
+fn range_is_subset_of_range(range1: Range, range2: Range) -> bool {
     range1.0 >= range2.0 && range1.1 <= range2.1 || range1.0 <= range2.0 && range1.1 >= range2.1
 }
 
-fn split_lines_into_range_pairs(lines: &Vec<String>) -> Vec<((u32, u32), (u32, u32))> {
+fn split_lines_into_range_pairs(lines: &Vec<String>) -> Vec<(Range, Range)> {
     let mut range_pairs = Vec::new();
     for line in lines {
         // Split each line into two using ',', then split each half using '-'.
-        let mut halves = line.split(',');
-        let mut first_half = halves.next().unwrap().split('-');
-        let mut second_half = halves.next().unwrap().split('-');
+        let (left, right) = line
+            .split_once(',')
+            .expect("expect each line to have a ','");
+        let (l1, l2) = left
+            .split_once('-')
+            .expect("expect each left half to have a '-'");
+        let (r1, r2) = right
+            .split_once('-')
+            .expect("expect each right half to have a '-'");
         let first_range = (
-            first_half.next().unwrap().parse::<u32>().unwrap(),
-            first_half.next().unwrap().parse::<u32>().unwrap(),
+            l1.parse::<u32>().expect("expect l1 to be a number"),
+            l2.parse::<u32>().expect("expect l2 to be a number"),
         );
         let second_range = (
-            second_half.next().unwrap().parse::<u32>().unwrap(),
-            second_half.next().unwrap().parse::<u32>().unwrap(),
+            r1.parse::<u32>().expect("expect r1 to be a number"),
+            r2.parse::<u32>().expect("expect r2 to be a number"),
         );
         range_pairs.push((first_range, second_range));
     }
     range_pairs
 }
 
-fn count_subset_pairs(range_pairs: &Vec<((u32, u32), (u32, u32))>) -> u32 {
+fn count_subset_pairs(range_pairs: &Vec<(Range, Range)>) -> u32 {
     let mut count = 0;
     for range_pair in range_pairs {
         if range_is_subset_of_range(range_pair.0, range_pair.1) {
@@ -94,11 +102,11 @@ fn count_subset_pairs(range_pairs: &Vec<((u32, u32), (u32, u32))>) -> u32 {
     count
 }
 
-fn ranges_overlap(range1: (u32, u32), range2: (u32, u32)) -> bool {
+fn ranges_overlap(range1: Range, range2: Range) -> bool {
     range1.0 <= range2.1 && range1.1 >= range2.0
 }
 
-fn count_overlapping_pairs(range_pairs: &Vec<((u32, u32), (u32, u32))>) -> u32 {
+fn count_overlapping_pairs(range_pairs: &Vec<(Range, Range)>) -> u32 {
     let mut count = 0;
     for range_pair in range_pairs {
         if ranges_overlap(range_pair.0, range_pair.1) {
