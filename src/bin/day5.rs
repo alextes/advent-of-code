@@ -208,7 +208,7 @@ fn execute_instructions_method_two(stacks: &mut Vec<Vec<char>>, instructions: &V
 }
 
 fn main() {
-    let input = include_str!("../../inputs/day5.txt");
+    let input = include_str!("../../input/day5.txt");
 
     // Split the input into the stacks and the instructions using an empty newline.
     let (stacks_text, instructions_text) = input
@@ -247,7 +247,7 @@ mod tests {
 
     #[test]
     fn example_one_test() {
-        let input = include_str!("../../inputs/day5-example.txt");
+        let input = include_str!("../../input/day5-example.txt");
 
         // Split the input into the stacks and the instructions using an empty newline.
         let (stacks_text, instructions_text) = input
@@ -274,7 +274,7 @@ mod tests {
 
     #[test]
     fn example_two_test() {
-        let input = include_str!("../../inputs/day5-example.txt");
+        let input = include_str!("../../input/day5-example.txt");
 
         // Split the input into the stacks and the instructions using an empty newline.
         let (stacks_text, instructions_text) = input

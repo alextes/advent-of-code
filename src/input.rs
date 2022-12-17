@@ -8,7 +8,7 @@ pub struct Input {
 
 impl Input {
     pub fn new(day: u8) -> Self {
-        let path = format!("inputs/day{day}.txt",);
+        let path = format!("input/day{day}.txt",);
         let contents = fs::read_to_string(path).expect("expect input.txt file to exist at path");
 
         let lines_string = contents
