@@ -113,7 +113,7 @@ impl Directory {
 
     fn all_child_directories(&self) -> Vec<DirectoryHandle> {
         let mut directories = vec![];
-        for (_, directory) in &self.directories {
+        for directory in self.directories.values() {
             directories.push(directory.clone());
             directories.append(&mut directory.borrow().all_child_directories());
         }
@@ -141,7 +141,7 @@ impl Debug for Directory {
             )?;
         }
 
-        for (_, dir) in &self.directories {
+        for dir in self.directories.values() {
             writeln!(f, "{:?}", dir.borrow())?;
         }
 

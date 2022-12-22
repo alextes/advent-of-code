@@ -14,7 +14,7 @@ fn get_calorie_sums(lines: &Vec<String>) -> Vec<u32> {
                 let num: u32 = num_str
                     .parse()
                     .expect("expect newlines or numerical strings");
-                sum = sum + num;
+                sum += num;
             }
         }
     }

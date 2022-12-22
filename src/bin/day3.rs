@@ -97,7 +97,7 @@ fn get_sum_method_one(lines: &Vec<String>) -> u32 {
         .sum()
 }
 
-fn get_sum_method_two(lines: &Vec<String>) -> u32 {
+fn get_sum_method_two(lines: &[String]) -> u32 {
     // Store matches in a vec.
     let mut matches = vec![];
 

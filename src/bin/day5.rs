@@ -175,7 +175,7 @@ fn parse_instructions(text: &str) -> Vec<Instruction> {
         .collect::<Vec<Instruction>>()
 }
 
-fn execute_instructions_method_one(stacks: &mut Vec<Vec<char>>, instructions: &Vec<Instruction>) {
+fn execute_instructions_method_one(stacks: &mut [Vec<char>], instructions: &Vec<Instruction>) {
     // Move the crates according to the instructions.
     // The first number is the count to move.
     // The second is the stack to take from.
@@ -189,7 +189,7 @@ fn execute_instructions_method_one(stacks: &mut Vec<Vec<char>>, instructions: &V
     }
 }
 
-fn execute_instructions_method_two(stacks: &mut Vec<Vec<char>>, instructions: &Vec<Instruction>) {
+fn execute_instructions_method_two(stacks: &mut [Vec<char>], instructions: &Vec<Instruction>) {
     // Move the crates on the stacks according to the instructions.
     // The first number is the count to move.
     // The second is the stack to take from.
@@ -232,6 +232,7 @@ fn main() {
     println!();
 
     // Execute the instructions according to method two.
+    #[allow(clippy::redundant_clone)]
     let mut stacks_two = stacks.clone();
     execute_instructions_method_two(&mut stacks_two, &instructions);
 
@@ -254,18 +255,15 @@ mod tests {
             .split_once("\n\n")
             .expect("input to have two sections");
 
-        let stacks = parse_stacks(stacks_text);
+        let mut stacks = parse_stacks(stacks_text);
         let instructions = parse_instructions(instructions_text);
 
-        // Clone the stacks so that we can execute the instructions on a copy.
-        let mut stacks_one = stacks.clone();
-
         // Execute the instructions.
-        execute_instructions_method_one(&mut stacks_one, &instructions);
+        execute_instructions_method_one(&mut stacks, &instructions);
 
         // Print the top crates.
         let mut result = String::new();
-        for stack in stacks_one {
+        for stack in stacks {
             result.push(stack[stack.len() - 1]);
         }
 
@@ -281,18 +279,15 @@ mod tests {
             .split_once("\n\n")
             .expect("input to have two sections");
 
-        let stacks = parse_stacks(stacks_text);
+        let mut stacks = parse_stacks(stacks_text);
         let instructions = parse_instructions(instructions_text);
 
-        // Clone the stacks so that we can execute the instructions on a copy.
-        let mut stacks_two = stacks.clone();
-
         // Execute the instructions.
-        execute_instructions_method_two(&mut stacks_two, &instructions);
+        execute_instructions_method_two(&mut stacks, &instructions);
 
         // Print the top crates.
         let mut result = String::new();
-        for stack in stacks_two {
+        for stack in stacks {
             result.push(stack[stack.len() - 1]);
         }
 
