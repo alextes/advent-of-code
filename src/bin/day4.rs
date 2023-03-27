@@ -121,10 +121,10 @@ fn main() {
     let range_pairs = split_lines_into_range_pairs(input.lines());
     // Count the number of range_pairs which are subsets.
     let subset_count = count_subset_pairs(&range_pairs);
-    println!("{}", subset_count);
+    println!("{subset_count}");
 
     let overlapping_count = count_overlapping_pairs(&range_pairs);
-    println!("{}", overlapping_count);
+    println!("{overlapping_count}");
 }
 
 #[cfg(test)]
