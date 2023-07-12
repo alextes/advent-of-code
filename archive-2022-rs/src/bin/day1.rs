@@ -1,30 +1,37 @@
 use advent_of_code::input::Input;
 
-/// Returns the summed calories per elf. Sorted. Biggest first.
-fn get_calorie_sums(lines: &Vec<String>) -> Vec<u32> {
-    let mut calorie_groups = vec![];
-    let mut sum = 0;
+fn group_strings_by_empty_line(lines: &[String]) -> Vec<Vec<&String>> {
+    let mut groups = vec![vec![]];
     for line in lines {
-        match line.as_str() {
-            "" => {
-                calorie_groups.push(sum);
-                sum = 0;
-            }
-            num_str => {
-                let num: u32 = num_str
-                    .parse()
-                    .expect("expect newlines or numerical strings");
-                sum += num;
-            }
+        if line.is_empty() {
+            groups.push(vec![]);
+        } else {
+            let last_group = groups
+                .last_mut()
+                .expect("expect groups to have at least one group");
+            last_group.push(line);
         }
     }
-
-    calorie_groups.sort();
-    calorie_groups.reverse();
-    calorie_groups
+    groups
 }
 
-fn get_biggest_sum(lines: &Vec<String>) -> u32 {
+/// Returns the summed calories per elf. Sorted. Biggest first.
+fn get_calorie_sums(lines: &[String]) -> Vec<u32> {
+    let mut calorie_sums = group_strings_by_empty_line(lines)
+        .iter()
+        .map(|group| {
+            group
+                .iter()
+                .map(|str| str.parse::<u32>().expect("expect each str to be a u32"))
+                .sum()
+        })
+        .collect::<Vec<_>>();
+    calorie_sums.sort();
+    calorie_sums.reverse();
+    calorie_sums
+}
+
+fn get_biggest_sum(lines: &[String]) -> u32 {
     let calorie_sums = get_calorie_sums(lines);
     calorie_sums
         .first()
@@ -32,7 +39,7 @@ fn get_biggest_sum(lines: &Vec<String>) -> u32 {
         .to_owned()
 }
 
-fn get_biggest_three_sum(lines: &Vec<String>) -> u32 {
+fn get_biggest_three_sum(lines: &[String]) -> u32 {
     let calorie_sums = get_calorie_sums(lines);
     calorie_sums[0..3].iter().sum()
 }
