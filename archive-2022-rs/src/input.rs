@@ -22,7 +22,11 @@ impl Input {
         Input { lines }
     }
 
-    pub fn lines(&self) -> &Vec<String> {
+    pub fn lines(&self) -> &[String] {
         &self.lines
+    }
+
+    pub fn raw_string(&self) -> String {
+        self.lines.join("\n")
     }
 }

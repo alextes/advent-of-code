@@ -109,7 +109,7 @@ impl Display for ParseShapeError {
 }
 
 /// Uses the interpretation where both columns represent shapes played.
-fn get_score_method_one(lines: &Vec<String>) -> u32 {
+fn get_score_method_one(lines: &[String]) -> u32 {
     let mut score = 0;
 
     for line in lines {
@@ -128,7 +128,7 @@ fn get_score_method_one(lines: &Vec<String>) -> u32 {
 
 /// Uses the interpretation where the first column is the shape played but the second is the
 /// outcome desired.
-fn get_score_method_two(lines: &Vec<String>) -> u32 {
+fn get_score_method_two(lines: &[String]) -> u32 {
     let mut score = 0;
 
     for line in lines {

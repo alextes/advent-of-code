@@ -66,7 +66,7 @@ fn range_is_subset_of_range(range1: Range, range2: Range) -> bool {
     range1.0 >= range2.0 && range1.1 <= range2.1 || range1.0 <= range2.0 && range1.1 >= range2.1
 }
 
-fn split_lines_into_range_pairs(lines: &Vec<String>) -> Vec<(Range, Range)> {
+fn split_lines_into_range_pairs(lines: &[String]) -> Vec<(Range, Range)> {
     let mut range_pairs = Vec::new();
     for line in lines {
         // Split each line into two using ',', then split each half using '-'.

@@ -75,7 +75,7 @@ impl From<AlphabetOrdinal> for u32 {
     }
 }
 
-fn get_sum_method_one(lines: &Vec<String>) -> u32 {
+fn get_sum_method_one(lines: &[String]) -> u32 {
     let mut errors = vec![];
 
     // Split each line into two halves based on the length of the vector.
