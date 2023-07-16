@@ -29,6 +29,80 @@
 //!
 //! Consider your map; how many trees are visible from outside the grid?
 
+use advent_of_code::input::Input;
+
+fn parse_input(input: &str) -> Vec<Vec<u8>> {
+    input
+        .lines()
+        .map(|line| {
+            line.chars()
+                .map(|c| c.to_digit(10).unwrap() as u8)
+                .collect()
+        })
+        .collect()
+}
+
+fn count_visible_trees(map: &[Vec<u8>]) -> usize {
+    let mut visible_trees = 0;
+    for (y, row) in map.iter().enumerate() {
+        for (x, tree) in row.iter().enumerate() {
+            // Trees on the edge are always visible
+            if x == 0 || y == 0 || x == row.len() - 1 || y == map.len() - 1 {
+                visible_trees += 1;
+                continue;
+            }
+
+            // Check if the tree is visible from any direction
+            let visible_left = row[..x].iter().all(|t| *t < *tree);
+            let visible_right = row[x + 1..].iter().all(|t| *t < *tree);
+            let visible_up = map[..y].iter().all(|r| r[x] < *tree);
+            let visible_down = map[y + 1..].iter().all(|r| r[x] < *tree);
+
+            // If the tree is visible from any direction, count it
+            if visible_left || visible_right || visible_up || visible_down {
+                visible_trees += 1;
+            }
+        }
+    }
+    visible_trees
+}
+
 pub fn main() {
     println!("day 8 solutions");
+
+    let input = Input::new(8).raw_string();
+    let map = parse_input(&input);
+
+    let visible_trees = count_visible_trees(&map);
+    println!("part 1: {}", visible_trees);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_input() {
+        let input = "30373\n25512\n65332\n33549\n35390";
+        let expected = vec![
+            vec![3, 0, 3, 7, 3],
+            vec![2, 5, 5, 1, 2],
+            vec![6, 5, 3, 3, 2],
+            vec![3, 3, 5, 4, 9],
+            vec![3, 5, 3, 9, 0],
+        ];
+        assert_eq!(parse_input(input), expected);
+    }
+
+    #[test]
+    fn test_count_visible_trees() {
+        let map = vec![
+            vec![3, 0, 3, 7, 3],
+            vec![2, 5, 5, 1, 2],
+            vec![6, 5, 3, 3, 2],
+            vec![3, 3, 5, 4, 9],
+            vec![3, 5, 3, 9, 0],
+        ];
+        assert_eq!(count_visible_trees(&map), 21);
+    }
 }
