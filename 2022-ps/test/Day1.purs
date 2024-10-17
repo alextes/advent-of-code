@@ -13,9 +13,10 @@ import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
+import Test.Spec.Runner.Node (runSpecAndExitProcess)
 
 main :: Effect Unit
-main = Aff.launchAff_ $ runSpec [ consoleReporter ] do
+main = runSpecAndExitProcess [ consoleReporter ] do
   describe "groupCalories" do
     it "groups calories together" do
       input1 <- Input.readInput 1 # liftEffect

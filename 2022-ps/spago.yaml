@@ -1,0 +1,30 @@
+package:
+  name: archive-2022-ps
+  dependencies:
+    - console
+    - effect
+    - prelude
+  test:
+    main: Test.Main
+    dependencies:
+      - aff
+      - arrays
+      - console
+      - effect
+      - foldable-traversable
+      - integers
+      - js-bigints
+      - lists
+      - maybe
+      - node-buffer
+      - node-fs
+      - partial
+      - prelude
+      - spec
+      - spec-node
+      - strings
+      - tuples
+workspace:
+  packageSet:
+    registry: 60.6.0
+  extraPackages: {}
