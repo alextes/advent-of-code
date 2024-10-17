@@ -3,7 +3,6 @@ module PrimeFactorization (isPrime, primeFactors, largestPrimeFactor) where
 
 import Prelude
 
-import Data.Int (rem)
 import Data.List (List(..), (..), (:))
 import Data.List as List
 import Data.List.NonEmpty (NonEmptyList)
@@ -15,7 +14,7 @@ import JS.BigInt as BigInt
 import Partial.Unsafe (unsafePartial)
 
 isDivisible :: Int -> Int -> Boolean
-isDivisible n m = n `rem` m == 0
+isDivisible n m = mod n m # eq 0
 
 isPrime :: Int -> Boolean
 isPrime 0 = false

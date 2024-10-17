@@ -1,0 +1,26 @@
+package:
+  name: euler-ps
+  dependencies:
+    - console
+    - effect
+    - prelude
+    - spec
+  test:
+    main: Test.Main
+    dependencies:
+      - arrays
+      - console
+      - effect
+      - foldable-traversable
+      - integers
+      - js-bigints
+      - lists
+      - maybe
+      - partial
+      - prelude
+      - spec-node
+
+workspace:
+  packageSet:
+    registry: 60.6.0
+  extraPackages: {}
