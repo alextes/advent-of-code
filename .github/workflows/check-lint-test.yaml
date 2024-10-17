@@ -1,4 +1,4 @@
-name: test
+name: check-lint-test
 
 on:
   push:
@@ -6,8 +6,11 @@ on:
       - main
 
 jobs:
-  check-lint-test:
+  ci-2023:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./2023
     steps:
       - uses: actions/checkout@v4
 
@@ -18,13 +21,10 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: cargo test
-        working-directory: ./2023
         run: cargo test
 
       - name: rustfmt
-        working-directory: ./2023
         run: cargo fmt --all -- --check
 
       - name: clippy
-        working-directory: ./2023
         run: cargo clippy --all --all-features --tests -- -D warnings
