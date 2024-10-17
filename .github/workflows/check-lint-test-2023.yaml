@@ -1,0 +1,30 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # selecting a toolchain either by action or manual `rustup` calls should happen
+      # before the plugin, as the cache uses the current rustc version as its cache key
+      - run: rustup toolchain install stable --profile minimal
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: cargo test
+        working-directory: ./2023
+        run: cargo test
+
+      - name: rustfmt
+        working-directory: ./2023
+        run: cargo fmt --all -- --check
+
+      - name: clippy
+        working-directory: ./2023
+        run: cargo clippy --all --all-features --tests -- -D warnings
