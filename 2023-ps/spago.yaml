@@ -1,0 +1,25 @@
+package:
+  name: 2023-ps
+  dependencies:
+    - aff
+    - arrays
+    - console
+    - debug
+    - effect
+    - foldable-traversable
+    - lists
+    - maybe
+    - node-fs
+    - partial
+    - prelude
+    - spec
+    - spec-node
+    - strings
+    - tuples
+  test:
+    main: Test.Main
+    dependencies: []
+workspace:
+  packageSet:
+    registry: 60.6.0
+  extraPackages: {}
