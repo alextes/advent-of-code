@@ -34,7 +34,7 @@ const DIGITS_AND_SPELLED_OUT_INTS: [(&str, u32); 18] = [
 fn find_first_and_last_digit(s: &str) -> (u32, u32) {
     let first = s
         .chars()
-        .find(|c| c.is_ascii_digit())
+        .find(char::is_ascii_digit)
         .expect("expect at least one digit in str")
         .to_digit(10)
         .unwrap();
@@ -42,7 +42,7 @@ fn find_first_and_last_digit(s: &str) -> (u32, u32) {
     let last = s
         .chars()
         .rev()
-        .find(|c| c.is_ascii_digit())
+        .find(char::is_ascii_digit)
         .expect("expect at least one digit in str")
         .to_digit(10)
         .unwrap();
@@ -81,20 +81,20 @@ fn main() {
     let solution1 = input
         .lines()
         .iter()
-        .map(|string| string.as_str())
+        .map(String::as_str)
         .map(find_first_and_last_digit)
         .map(concat_int_pair)
         .sum::<u32>();
-    println!("solution 1: {}", solution1);
+    println!("solution 1: {solution1}");
 
     let solution2 = input
         .lines()
         .iter()
-        .map(|string| string.as_str())
+        .map(String::as_str)
         .map(find_ints_and_spelled_out_ints)
         .map(concat_int_pair)
         .sum::<u32>();
-    println!("solution 2: {}", solution2);
+    println!("solution 2: {solution2}");
 }
 
 #[cfg(test)]
