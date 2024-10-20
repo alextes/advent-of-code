@@ -211,8 +211,9 @@ fn main() {
 mod tests {
     use super::*;
     use indoc::indoc;
+
     #[test]
-    fn test_example1() {
+    fn test_example_1() {
         let input = indoc! {"
             467..114..
             ...*......
@@ -263,7 +264,7 @@ mod tests {
     }
 
     #[test]
-    fn test_example2() {
+    fn test_example_2() {
         let input = indoc! {"
             467..114..
             ...*......
