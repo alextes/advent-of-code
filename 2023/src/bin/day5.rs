@@ -51,183 +51,212 @@
 //! Consider all of the initial seed numbers listed in the ranges on the first line of the almanac.
 //! What is the lowest location number that corresponds to any of the initial seed numbers?
 
-use std::collections::{HashMap, HashSet};
-
-fn build_map(section: &str) -> HashMap<std::ops::Range<u64>, std::ops::Range<u64>> {
-    let mut map = HashMap::new();
-    let contents = section.lines().skip(1).collect::<Vec<&str>>();
-    for line in contents {
-        let mut parts = line.split_whitespace();
-        let dest_start: u64 = parts.next().unwrap().parse().unwrap();
-        let source_start: u64 = parts.next().unwrap().parse().unwrap();
-        let range_length: u64 = parts.next().unwrap().parse().unwrap();
-
-        let source_range = source_start..source_start + range_length;
-        let dest_range = dest_start..dest_start + range_length;
-
-        map.insert(source_range, dest_range);
-    }
-
-    map
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct Range {
+    start: u64,
+    end: u64,
 }
 
-fn translate_with_map(
-    number: u64,
-    map: &HashMap<std::ops::Range<u64>, std::ops::Range<u64>>,
-) -> u64 {
-    map.iter()
-        .find(|(source_range, _)| source_range.contains(&number))
-        .map(|(source_range, dest_range)| {
-            let offset = number - source_range.start;
-            dest_range.start + offset
-        })
-        .unwrap_or(number)
+impl Range {
+    fn new(start: u64, end: u64) -> Self {
+        Range { start, end }
+    }
+
+    // Check if this range overlaps with another range
+    fn overlaps(&self, other: &Range) -> bool {
+        self.start <= other.end && other.start <= self.end
+    }
+
+    // Compute the intersection of two ranges
+    fn intersect(&self, other: &Range) -> Option<Range> {
+        let start = self.start.max(other.start);
+        let end = self.end.min(other.end);
+        if start <= end {
+            Some(Range::new(start, end))
+        } else {
+            None
+        }
+    }
+}
+
+struct RangeMapping {
+    dest_start: u64,
+    source_start: u64,
+    length: u64,
+}
+
+impl RangeMapping {
+    fn source_range(&self) -> Range {
+        Range::new(self.source_start, self.source_start + self.length - 1)
+    }
+
+    fn map_range(&self, source_range: &Range) -> Option<Range> {
+        let mapping_source_range = self.source_range();
+        if let Some(overlap) = source_range.intersect(&mapping_source_range) {
+            let offset_start = overlap.start - self.source_start;
+            let offset_end = overlap.end - self.source_start;
+            Some(Range::new(
+                self.dest_start + offset_start,
+                self.dest_start + offset_end,
+            ))
+        } else {
+            None
+        }
+    }
+
+    fn contains(&self, number: u64) -> bool {
+        number >= self.source_start && number < self.source_start + self.length
+    }
+
+    fn map(&self, number: u64) -> u64 {
+        let offset = number - self.source_start;
+        self.dest_start + offset
+    }
+}
+
+fn map_number_with_range_mapping(table: &[RangeMapping], number: u64) -> u64 {
+    table
+        .iter()
+        .find(|mapping| mapping.contains(number))
+        .map_or(number, |mapping| mapping.map(number))
 }
 
 /// To find the lowest location, you need to start with the seed number 0 and follow the maps in
 /// order. We start by building the maps. Then follow them to find each location number. Then take
 /// their min.
-fn find_lowest_location(input: &str) -> u64 {
+fn find_lowest_location_from_seed_numbers(input: &str) -> u64 {
     let sections = input.split("\n\n").collect::<Vec<&str>>();
 
     let seed_numbers = sections[0]
-        .split(":")
+        .split(':')
         .last()
         .unwrap()
         .split_whitespace()
         .map(|n| n.parse().unwrap())
-        .collect::<Vec<u64>>();
+        .collect::<Vec<_>>();
 
-    let seed_to_soil_map = build_map(sections[1]);
-    let soil_to_fertilizer_map = build_map(sections[2]);
-    let fertilizer_to_water_map = build_map(sections[3]);
-    let water_to_light_map = build_map(sections[4]);
-    let light_to_temperature_map = build_map(sections[5]);
-    let temperature_to_humidity_map = build_map(sections[6]);
-    let humidity_to_location_map = build_map(sections[7]);
+    let tables = sections
+        .into_iter()
+        .skip(1)
+        .map(parse_range_mapping)
+        .collect::<Vec<_>>();
 
-    let mut locations = Vec::new();
-
-    for seed in seed_numbers {
-        let soil = translate_with_map(seed, &seed_to_soil_map);
-        let fertilizer = translate_with_map(soil, &soil_to_fertilizer_map);
-        let water = translate_with_map(fertilizer, &fertilizer_to_water_map);
-        let light = translate_with_map(water, &water_to_light_map);
-        let temperature = translate_with_map(light, &light_to_temperature_map);
-        let humidity = translate_with_map(temperature, &temperature_to_humidity_map);
-        let location = translate_with_map(humidity, &humidity_to_location_map);
-
-        locations.push(location);
-    }
+    let locations: Vec<_> = seed_numbers
+        .iter()
+        .map(|n| {
+            let mut number = *n;
+            for table in &tables {
+                number = map_number_with_range_mapping(table, number);
+            }
+            number
+        })
+        .collect();
 
     *locations.iter().min().unwrap()
 }
 
-fn build_map_2(section: &str) -> Vec<(u64, u64, u64)> {
-    let mut map = Vec::new();
-    let contents = section.lines().skip(1).collect::<Vec<&str>>();
-    for line in contents {
-        let mut parts = line.split_whitespace();
-        let dest_start: u64 = parts.next().unwrap().parse().unwrap();
-        let source_start: u64 = parts.next().unwrap().parse().unwrap();
-        let range_length: u64 = parts.next().unwrap().parse().unwrap();
-
-        map.push((source_start, dest_start, range_length));
-    }
-    map
+fn parse_range_mapping(section: &str) -> Vec<RangeMapping> {
+    section
+        .lines()
+        .skip(1)
+        .map(|line| {
+            let mut parts = line.split_whitespace().map(|n| n.parse::<u64>().unwrap());
+            let dest_start = parts.next().unwrap();
+            let source_start = parts.next().unwrap();
+            let range_length = parts.next().unwrap();
+            RangeMapping {
+                dest_start,
+                source_start,
+                length: range_length,
+            }
+        })
+        .collect()
 }
-
-fn inverse_map_number(number: u64, mapping_intervals: &[(u64, u64, u64)]) -> Vec<u64> {
-    let mut possible_sources = Vec::new();
-    let mut unmapped = true;
-
-    for &(s_start, d_start, length) in mapping_intervals {
-        let d_end = d_start + length - 1;
-
-        if number >= d_start && number <= d_end {
-            let offset = number - d_start;
-            let source_number = s_start + offset;
-            possible_sources.push(source_number);
-            unmapped = false;
+// Function to process a single range through a mapping table
+fn map_range_with_range_mappings(range: &Range, mapping_table: &[RangeMapping]) -> Vec<Range> {
+    // Collect breakpoints: start and end of the range, and start and end of overlapping mappings
+    let mut breakpoints = vec![range.start, range.end + 1];
+    for mapping in mapping_table {
+        let mapping_source = mapping.source_range();
+        if let Some(overlap) = range.intersect(&mapping_source) {
+            breakpoints.push(overlap.start);
+            breakpoints.push(overlap.end + 1);
         }
     }
+    // Remove duplicates and sort breakpoints
+    breakpoints.sort_unstable();
+    breakpoints.dedup();
 
-    // If the number isn't in any mapping interval, it maps to itself
-    if unmapped {
-        possible_sources.push(number);
-    }
+    let mut new_ranges = Vec::new();
 
-    possible_sources
-}
-
-fn is_number_in_seed_ranges(number: u64, seed_ranges: &[(u64, u64)]) -> bool {
-    for &(start, end) in seed_ranges {
-        if number >= start && number <= end {
-            return true;
+    // For each interval between breakpoints, determine if it is covered by any mapping
+    for i in 0..breakpoints.len() - 1 {
+        let interval = Range::new(breakpoints[i], breakpoints[i + 1] - 1);
+        if interval.start > interval.end {
+            continue;
+        }
+        let mut mapped = false;
+        for mapping in mapping_table {
+            let mapping_source = mapping.source_range();
+            if interval.overlaps(&mapping_source) {
+                // Map the interval
+                if let Some(mapped_range) = mapping.map_range(&interval) {
+                    new_ranges.push(mapped_range);
+                    mapped = true;
+                    break;
+                }
+            }
+        }
+        if !mapped {
+            // Unmapped interval maps to itself
+            new_ranges.push(interval);
         }
     }
-    false
+    new_ranges
 }
 
 fn find_lowest_location_from_seed_ranges(input: &str) -> u64 {
     let sections = input.split("\n\n").collect::<Vec<&str>>();
 
     let seed_ranges_input = sections[0]
-        .split(":")
+        .split(':')
         .last()
         .unwrap()
         .split_whitespace()
         .collect::<Vec<&str>>();
 
-    // Collect every two values into a range
+    // Collect every two values into a seed range
     let seed_ranges = seed_ranges_input
         .chunks(2)
         .map(|chunk| {
             let start: u64 = chunk[0].parse().unwrap();
             let length: u64 = chunk[1].parse().unwrap();
             let end = start + length - 1;
-            (start, end)
+            Range::new(start, end)
         })
-        .collect::<Vec<(u64, u64)>>();
+        .collect::<Vec<Range>>();
 
-    let mapping_functions = sections[1..]
-        .iter()
-        .map(|section| build_map_2(section))
-        .collect::<Vec<_>>();
+    let mapping_tables = sections
+        .into_iter()
+        .skip(1)
+        .map(parse_range_mapping)
+        .collect::<Vec<Vec<RangeMapping>>>();
 
-    // Start from the lowest possible location number
-    let mut location_number = 0;
+    // Initialize current ranges with seed ranges
+    let mut current_ranges = seed_ranges;
 
-    loop {
-        // Initialize the set of possible numbers at the current step
-        let mut current_numbers = vec![location_number];
-
-        // We will work backwards through the mappings
-        for mapping_intervals in mapping_functions.iter().rev() {
-            let mut next_numbers = HashSet::new();
-
-            for &number in &current_numbers {
-                let sources = inverse_map_number(number, mapping_intervals);
-                for source in sources {
-                    next_numbers.insert(source);
-                }
-            }
-
-            // Update the current numbers for the next iteration
-            current_numbers = next_numbers.into_iter().collect();
+    for mapping_table in mapping_tables {
+        let mut new_ranges = Vec::new();
+        for range in &current_ranges {
+            let mapped_ranges = map_range_with_range_mappings(range, &mapping_table);
+            new_ranges.extend(mapped_ranges);
         }
-
-        // At this point, current_numbers contains possible seed numbers
-        for &seed_number in &current_numbers {
-            if is_number_in_seed_ranges(seed_number, &seed_ranges) {
-                // Found the lowest location number
-                return location_number;
-            }
-        }
-
-        // Move to the next location number
-        location_number += 1;
+        current_ranges = new_ranges;
     }
+
+    // Now, current_ranges contains ranges in the location category
+    // Find the minimum start among all ranges
+    current_ranges.into_iter().map(|r| r.start).min().unwrap()
 }
 
 fn main() {
@@ -235,11 +264,11 @@ fn main() {
 
     let input = include_str!("../../input/day5.txt");
 
-    let solution = find_lowest_location(input);
-    println!("Lowest location: {}", solution);
+    let solution = find_lowest_location_from_seed_numbers(input);
+    println!("Lowest location: {solution}");
 
     let solution = find_lowest_location_from_seed_ranges(input);
-    println!("Lowest location from seed ranges: {}", solution);
+    println!("Lowest location from seed ranges: {solution}");
 }
 
 #[cfg(test)]
@@ -286,7 +315,7 @@ mod tests {
 
     #[test]
     fn test_example_1() {
-        let solution = find_lowest_location(EXAMPLE_1);
+        let solution = find_lowest_location_from_seed_numbers(EXAMPLE_1);
 
         assert_eq!(solution, 35);
     }
@@ -295,7 +324,7 @@ mod tests {
     fn test_solution_1() {
         let input = include_str!("../../input/day5.txt");
 
-        let solution = find_lowest_location(input);
+        let solution = find_lowest_location_from_seed_numbers(input);
 
         assert_eq!(solution, 662197086);
     }
