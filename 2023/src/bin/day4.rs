@@ -31,16 +31,16 @@ fn calc_winning_cards_score(input: &str) -> u32 {
     let mut sum = 0;
 
     for line in input.lines() {
-        let _card_title = line.split(":").next().unwrap();
-        let card_contents = line.split(":").last().unwrap().trim_start();
-        let mut winning_numbers = card_contents.split("|");
+        let _card_title = line.split(':').next().unwrap();
+        let card_contents = line.split(':').last().unwrap().trim_start();
+        let mut winning_numbers = card_contents.split('|');
         let winning_numbers = winning_numbers.next().unwrap();
         let winning_numbers: HashSet<u8> = winning_numbers
             .split_whitespace()
             .map(|n| n.parse().unwrap())
             .collect();
 
-        let candidate_numbers = card_contents.split("|").last().unwrap();
+        let candidate_numbers = card_contents.split('|').last().unwrap();
         let candidate_numbers: Vec<u8> = candidate_numbers
             .split_whitespace()
             .map(|n| n.parse().unwrap())
@@ -60,7 +60,7 @@ fn calc_winning_cards_score(input: &str) -> u32 {
             0
         };
 
-        sum += score
+        sum += score;
     }
 
     sum
@@ -70,22 +70,22 @@ fn calc_final_card_count(input: &str) -> u32 {
     let mut card_counts = HashMap::new();
 
     for line in input.lines() {
-        let card_title = line.split(":").next().unwrap();
+        let card_title = line.split(':').next().unwrap();
         let card_number: u32 = card_title
             .split_whitespace()
             .last()
             .unwrap()
             .parse()
             .unwrap();
-        let card_contents = line.split(":").last().unwrap().trim_start();
-        let mut winning_numbers = card_contents.split("|");
+        let card_contents = line.split(':').last().unwrap().trim_start();
+        let mut winning_numbers = card_contents.split('|');
         let winning_numbers = winning_numbers.next().unwrap();
         let winning_numbers: HashSet<u8> = winning_numbers
             .split_whitespace()
             .map(|n| n.parse().unwrap())
             .collect();
 
-        let candidate_numbers = card_contents.split("|").last().unwrap();
+        let candidate_numbers = card_contents.split('|').last().unwrap();
         let candidate_numbers: Vec<u8> = candidate_numbers
             .split_whitespace()
             .map(|n| n.parse().unwrap())
@@ -134,10 +134,10 @@ pub fn main() {
     let input = include_str!("../../input/day4.txt");
 
     let solution = calc_winning_cards_score(input);
-    println!("The total score of the winning cards is: {}", solution);
+    println!("The total score of the winning cards is: {solution}");
 
     let solution = calc_final_card_count(input);
-    println!("The total number of cards won is: {}", solution);
+    println!("The total number of cards won is: {solution}");
 }
 
 #[cfg(test)]

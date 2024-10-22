@@ -171,17 +171,12 @@ fn find_gear_ratio_sum(input: &[&str]) -> u32 {
         let mut adjacent_numbers = HashSet::new();
 
         for &(di, dj) in &directions {
-            let adj_i = i as isize + di;
-            let adj_j = j as isize + dj;
-            if adj_i >= 0
-                && adj_i < input.len() as isize
-                && adj_j >= 0
-                && adj_j < input[adj_i as usize].len() as isize
+            if let (Some(adj_i), Some(adj_j)) = (i.checked_add_signed(di), j.checked_add_signed(dj))
             {
-                let adj_i = adj_i as usize;
-                let adj_j = adj_j as usize;
-                if let Some(&number_index) = position_to_number.get(&(adj_i, adj_j)) {
-                    adjacent_numbers.insert(number_index);
+                if adj_i < input.len() && adj_j < input[adj_i].len() {
+                    if let Some(&number_index) = position_to_number.get(&(adj_i, adj_j)) {
+                        adjacent_numbers.insert(number_index);
+                    }
                 }
             }
         }
@@ -201,10 +196,10 @@ fn main() {
     let input = include_str!("../../input/day3.txt");
     let lines: Vec<&str> = input.lines().collect();
     let solution = find_part_number_sum(&lines);
-    println!("Solution 1: {}", solution);
+    println!("Solution 1: {solution}");
 
     let solution = find_gear_ratio_sum(&lines);
-    println!("Solution 2: {}", solution);
+    println!("Solution 2: {solution}");
 }
 
 #[cfg(test)]
