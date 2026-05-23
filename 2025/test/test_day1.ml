@@ -11,4 +11,6 @@ R14
 L82
 |}
 
-let () = assert (Aoc2025.Day1.solve1 sample = 3)
+let () =
+  assert (Aoc2025.Day1.solve1 sample = 3);
+  assert (Aoc2025.Day1.solve2 sample = 6)

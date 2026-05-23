@@ -40,13 +40,37 @@ let lines input =
   |> List.filter (fun line -> String.trim line <> "")
 
 let rotations = List.map parse_rotation
+let parse_input input = input |> lines |> rotations
 
-let apply_rotation state rotation =
+let distance_to_zero dial direction =
+  let current = dial_value dial in
+  match direction with
+  | L -> if current = 0 then 100 else current
+  | R -> if current = 0 then 100 else 100 - current
+
+let zero_hits_during_rotation dial rotation =
+  let first_hit = distance_to_zero dial rotation.direction in
+  if rotation.distance < first_hit then 0
+  else 1 + ((rotation.distance - first_hit) / 100)
+
+let apply_rotation_part1 state rotation =
   let dial = turn state.dial rotation in
   let zero_hits = state.zero_hits + if dial_value dial = 0 then 1 else 0 in
   { dial; zero_hits }
 
+let apply_rotation_part2 state rotation =
+  let dial = turn state.dial rotation in
+  let zero_hits =
+    state.zero_hits + zero_hits_during_rotation state.dial rotation
+  in
+  { dial; zero_hits }
+
 let solve1 input =
-  let parsed = input |> lines |> rotations in
-  let final_state = List.fold_left apply_rotation initial_state parsed in
+  let parsed = parse_input input in
+  let final_state = List.fold_left apply_rotation_part1 initial_state parsed in
+  final_state.zero_hits
+
+let solve2 input =
+  let parsed = parse_input input in
+  let final_state = List.fold_left apply_rotation_part2 initial_state parsed in
   final_state.zero_hits
