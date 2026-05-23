@@ -1,0 +1,12 @@
+(lang dune 3.13)
+
+(name aoc2025)
+
+(generate_opam_files true)
+
+(package
+ (name aoc2025)
+ (synopsis "Advent of Code 2025 exercises in OCaml")
+ (depends
+  (ocaml (>= 5.0))
+  dune))
