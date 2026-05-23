@@ -1,43 +1,52 @@
 (** https://adventofcode.com/2025/day/1 *)
 
 type dial = Dial of int
-type dial_state = { dial : dial; crossings : int }
+type dial_state = { dial : dial; zero_hits : int }
 type direction = L | R
 type rotation = { direction : direction; distance : int }
 
-let make_dial n =
-  if n < 0 || n > 99 then failwith "Dial value must be between 0 and 99"
-  else Dial n
+let dial_value (Dial n) = n
+let normalize n = ((n mod 100) + 100) mod 100
+let make_dial n = Dial (normalize n)
 
-let initial_state = { dial = make_dial 50; crossings = 0 }
+let turn dial rotation =
+  let current = dial_value dial in
+  let distance =
+    match rotation.direction with
+    | L -> -rotation.distance
+    | R -> rotation.distance
+  in
+  make_dial (current + distance)
+
+let initial_state = { dial = make_dial 50; zero_hits = 0 }
 
 let read_file filename =
   In_channel.with_open_text
     (Printf.sprintf "input/%s.txt" filename)
     In_channel.input_all
 
-let parse_rotation line = 
-  let direction = match String.get line 0 with
+let parse_rotation line =
+  let direction =
+    match String.get line 0 with
     | 'L' -> L
     | 'R' -> R
-    | _ -> failwith "Invalid direction" in
+    | _ -> failwith "Invalid direction"
+  in
   let distance = int_of_string (String.sub line 1 (String.length line - 1)) in
   { direction; distance }
 
-let lines input =  input
-  |> String.split_on_char '\n' 
+let lines input =
+  input |> String.split_on_char '\n'
   |> List.filter (fun line -> String.trim line <> "")
 
 let rotations = List.map parse_rotation
 
-let print_rotation r =
-  Printf.sprintf "%s%d" (match r.direction with L -> "L" | R -> "R") r.distance
+let apply_rotation state rotation =
+  let dial = turn state.dial rotation in
+  let zero_hits = state.zero_hits + if dial_value dial = 0 then 1 else 0 in
+  { dial; zero_hits }
 
 let solve1 input =
-  let instruction1 = 
-    lines input
-    |> List.map parse_rotation
-    |> (fun parsed -> List.nth parsed 0)
-  in
-  Printf.printf "First instruction: %s" (print_rotation instruction1);
-  0
+  let parsed = input |> lines |> rotations in
+  let final_state = List.fold_left apply_rotation initial_state parsed in
+  final_state.zero_hits
