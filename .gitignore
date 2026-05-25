@@ -9,3 +9,5 @@ node_modules/
 .spago
 output
 target
+.claude/workspaces/
+.claude/worktrees/
